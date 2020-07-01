@@ -1,0 +1,218 @@
+{
+  "kecamatan": [
+    {
+      "id": 1473010,
+      "id_kota": "1473",
+      "nama": "Bukit Kapur",
+      "kelurahan": [
+        {
+          "id": 1473010001,
+          "id_kecamatan": "1473010",
+          "nama": "Bukit Nenas"
+        },
+        {
+          "id": 1473010006,
+          "id_kecamatan": "1473010",
+          "nama": "Bagan Besar"
+        },
+        {
+          "id": 1473010007,
+          "id_kecamatan": "1473010",
+          "nama": "Bukit Kayu Kapur"
+        },
+        {
+          "id": 1473010008,
+          "id_kecamatan": "1473010",
+          "nama": "Gurun Panjang"
+        },
+        {
+          "id": 1473010009,
+          "id_kecamatan": "1473010",
+          "nama": "Kampung Baru"
+        }
+      ]
+    },
+    {
+      "id": 1473011,
+      "id_kota": "1473",
+      "nama": "Medang Kampai",
+      "kelurahan": [
+        {
+          "id": 1473011001,
+          "id_kecamatan": "1473011",
+          "nama": "Pelintung"
+        },
+        {
+          "id": 1473011002,
+          "id_kecamatan": "1473011",
+          "nama": "Guntung"
+        },
+        {
+          "id": 1473011003,
+          "id_kecamatan": "1473011",
+          "nama": "Teluk Makmur"
+        },
+        {
+          "id": 1473011004,
+          "id_kecamatan": "1473011",
+          "nama": "Mundam"
+        }
+      ]
+    },
+    {
+      "id": 1473012,
+      "id_kota": "1473",
+      "nama": "Sungai Sembilan",
+      "kelurahan": [
+        {
+          "id": 1473012001,
+          "id_kecamatan": "1473012",
+          "nama": "Bangsal Aceh"
+        },
+        {
+          "id": 1473012002,
+          "id_kecamatan": "1473012",
+          "nama": "Lubuk Gaung"
+        },
+        {
+          "id": 1473012003,
+          "id_kecamatan": "1473012",
+          "nama": "Basilam Baru"
+        },
+        {
+          "id": 1473012004,
+          "id_kecamatan": "1473012",
+          "nama": "Batu Teritip"
+        },
+        {
+          "id": 1473012005,
+          "id_kecamatan": "1473012",
+          "nama": "Tanjung Penyembal"
+        }
+      ]
+    },
+    {
+      "id": 1473020,
+      "id_kota": "1473",
+      "nama": "Dumai Barat",
+      "kelurahan": [
+        {
+          "id": 1473020005,
+          "id_kecamatan": "1473020",
+          "nama": "Pangkalan Sesai"
+        },
+        {
+          "id": 1473020006,
+          "id_kecamatan": "1473020",
+          "nama": "Purnama"
+        },
+        {
+          "id": 1473020009,
+          "id_kecamatan": "1473020",
+          "nama": "Simpang Tetap Darul Ihsan"
+        },
+        {
+          "id": 1473020010,
+          "id_kecamatan": "1473020",
+          "nama": "Bagan Keladi"
+        }
+      ]
+    },
+    {
+      "id": 1473021,
+      "id_kota": "1473",
+      "nama": "Dumai Selatan",
+      "kelurahan": [
+        {
+          "id": 1473021001,
+          "id_kecamatan": "1473021",
+          "nama": "Mekar Sari"
+        },
+        {
+          "id": 1473021002,
+          "id_kecamatan": "1473021",
+          "nama": "Bukit Timah"
+        },
+        {
+          "id": 1473021003,
+          "id_kecamatan": "1473021",
+          "nama": "Bumi Ayu"
+        },
+        {
+          "id": 1473021004,
+          "id_kecamatan": "1473021",
+          "nama": "Bukit Datuk"
+        },
+        {
+          "id": 1473021005,
+          "id_kecamatan": "1473021",
+          "nama": "Ratu Sima"
+        }
+      ]
+    },
+    {
+      "id": 1473030,
+      "id_kota": "1473",
+      "nama": "Dumai Timur",
+      "kelurahan": [
+        {
+          "id": 1473030001,
+          "id_kecamatan": "1473030",
+          "nama": "Tanjung Palas"
+        },
+        {
+          "id": 1473030002,
+          "id_kecamatan": "1473030",
+          "nama": "Jaya Mukti"
+        },
+        {
+          "id": 1473030003,
+          "id_kecamatan": "1473030",
+          "nama": "Teluk Binjai"
+        },
+        {
+          "id": 1473030006,
+          "id_kecamatan": "1473030",
+          "nama": "Buluh Kasap"
+        },
+        {
+          "id": 1473030007,
+          "id_kecamatan": "1473030",
+          "nama": "Bukit Batrem"
+        }
+      ]
+    },
+    {
+      "id": 1473031,
+      "id_kota": "1473",
+      "nama": "Dumai Kota",
+      "kelurahan": [
+        {
+          "id": 1473031001,
+          "id_kecamatan": "1473031",
+          "nama": "Rimba Sekampung"
+        },
+        {
+          "id": 1473031002,
+          "id_kecamatan": "1473031",
+          "nama": "Sukajadi"
+        },
+        {
+          "id": 1473031003,
+          "id_kecamatan": "1473031",
+          "nama": "Bintan"
+        },
+        {
+          "id": 1473031004,
+          "id_kecamatan": "1473031",
+          "nama": "Dumai Kota"
+        },
+        {
+          "id": 1473031005,
+          "id_kecamatan": "1473031",
+          "nama": "Laksamana"
+        }
+      ]
+    }
+  ]
+}
