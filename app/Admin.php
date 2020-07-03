@@ -11,19 +11,6 @@ use \Crud as Crud;
 class Admin
 {
 
-    public function Home()
-    {
-        $data = [
-            'judul' => 'Home',
-            'path' => 'Home',
-            'link' => 'Home',
-            'icon' => 'fa-home',
-
-            'warna' => 'primary',
-
-        ];
-        return $data;
-    }
     public function Dinsos($Request, $Session)
     {
         $data = [
@@ -92,7 +79,13 @@ class Admin
 
         ];
         //Fungsi::fields('pengguna', new Crud);
+        $data['smart'] = collect(Crud::table('smart')->select()->where('tahun', $Session['tahun'])->get());
+        if ($data['smart']->isEmpty()) {
+            Crud::table('smart')->insert(['tahun' => $Session['tahun'], 'min' => 0])->execute();
+            $data['smart'] = collect(Crud::table('smart')->select()->where('tahun', $Session['tahun'])->get());
 
+        }
+        $data['smart'] = $data['smart']->first();
         $string = file_get_contents("hasil.json");
         $data['hasil'] = json_decode($string, true);
 
@@ -104,7 +97,6 @@ class Admin
             $data['key'] = $data['data.kriteria']->where('idkriteria', $Request->idkriteria)->first();
             $data['form.kriteria']['kriteria'] = $data['key']->kriteria;
             $data['form.kriteria']['bobot'] = $data['key']->bobot;
-            $data['max'] = 100 - $data['data.kriteria']->sum('bobot') + $data['key']->bobot;
             $data['data.subkriteria'] = collect(Crud::table('subkriteria')->select()->where('idkriteria', $data['key']->idkriteria)->get());
             $data['form.subkriteria'] = ['subkriteria' => null, 'nilai' => 0];
             if (isset($Request->idsubkriteria)) {

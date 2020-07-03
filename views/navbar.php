@@ -4,5 +4,5 @@
     <span>Periode Tahun <?php echo $Session['tahun']; ?></span>
 
     </span>
-    <span>Selamat Datang, Admin</span>
+    <span>Selamat Datang, Admin <?php if ($Session['admin']->jenis == 'Kelurahan'): ?> <strong><?php echo $Session['admin']->kelurahan; ?></strong> <?php endif;?> </span>
 </nav>

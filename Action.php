@@ -21,16 +21,32 @@ function insert($Request, $Crud, $link, $pesan)
     $tb = $Request->tb;
     $input = $Request->input;
     $table = $Request->table;
-    if ($table == 'pemesanan') {
-        $cek = collect($Crud->table('pemesanan')->select()->where('tgl_acara', $input[3])->get());
+    $Session = $_SESSION;
+
+    if ($table == 'keluarga') {
+        $cek = collect($Crud->table('keluarga')->select()->where('nik', $input[0])->where('tahun', $Session['tahun'])->get());
         if ($cek->isNotEmpty()) {
-            $pesan = "Maaf sudah ada yang membooking acara pada tanggal yang anda pilih";
+            $pesan = "Keluarga dengan NIK yang di input kan sudah ada, silahkan cek kembali data yg di input";
             $link = $_SERVER['HTTP_REFERER'];
 
             echo "<script>alert('$pesan')</script>";
             echo "<script>location.href='$link'</script>";
             die();
         }
+        $Request->tanggungan = collect($Request->tanggungan)->where('jum', '>', 0)->map(function ($item, $key) {
+            $items = json_decode($item->detail);
+            $items->jum = $item->jum;
+            return $items;
+        });
+        $Request->kriteria = collect($Request->kriteria)->map(function ($item, $key) {
+            $item = json_decode($item);
+            return $item;
+        });
+        array_push($input, json_encode($Request->tanggungan));
+        array_push($tb, "tanggungan");
+        array_push($input, json_encode($Request->kriteria));
+        array_push($tb, "kriteria");
+
     }
     if (isset($_FILES['input'])) {
         if ($_FILES['input']['size'][0] > 0) {

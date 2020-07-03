@@ -26,7 +26,8 @@
                                             <?php echo $k->kriteria; ?>
                                         </td>
                                         <td>
-                                            <?php echo $k->bobot; ?>%</td>
+                                            <?php echo $k->bobot; ?>
+                                        </td>
                                         <td class="text-right ">
                                             <a href="?idkriteria=<?php echo $k->idkriteria; ?>" class="btn btn-warning btn-sm">Kelola</a>
                                         </td>
@@ -38,7 +39,8 @@
                                         <td></td>
                                         <td>Total</td>
                                         <td>
-                                            <?php echo $data['data.kriteria']->sum('bobot'); ?>%</td>
+                                            <?php echo $data['data.kriteria']->sum('bobot'); ?>
+                                        </td>
                                         <td></td>
                                     </tr>
                                     <tr>
@@ -48,7 +50,7 @@
                                             <input type="hidden" name="tb[]" value="kriteria">
                                         </td>
                                         <td>
-                                            <input type="number" value="<?php echo $data['form.kriteria']['bobot']; ?>" required="" min="1" max="<?php echo $data['max']; ?>" class="form-control" name="input[]">
+                                            <input type="number" step="any" value="<?php echo $data['form.kriteria']['bobot']; ?>" required="" class="form-control" name="input[]">
                                             <input type="hidden" name="tb[]" value="bobot">
                                         </td>
                                         <td>
@@ -95,7 +97,8 @@
                                             <?php echo $k->subkriteria; ?>
                                         </td>
                                         <td>
-                                            <?php echo $k->nilai; ?>%</td>
+                                            <?php echo $k->nilai; ?>
+                                        </td>
                                         <td class="text-right ">
                                             <a href="?idsubkriteria=<?php echo $k->idsubkriteria; ?>&idkriteria=<?php echo $k->idkriteria; ?>" class="btn btn-warning btn-sm">Kelola</a>
                                         </td>
@@ -200,19 +203,25 @@
                     </form>
                 </div>
                 <div class="  col-5 mb-5 border-primary border-left">
-                    <div class="alert alert-success" role="alert">
-                        <h4 class="alert-heading">Set skor minimum</h4>
-                        <hr>
-                        <form>
-                        <div class="input-group input-group-sm">
-                            <input type="text" class="form-control" value="<?php echo $data['hasil']->min; ?>" name="min" aria-label="Recipient's username" aria-describedby="button-addon2">
-                            <div class="input-group-append">
-                                <button class="btn btn-outline-primary" type="submit" id="button-addon2">Set</button>
-                            </div>
+                    <form action="Action.php" method="post">
+                        <div class="alert alert-success" role="alert">
+                            <h4 class="alert-heading">Set skor minimum</h4>
+                            <hr>
+                            <form>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control" value="<?php echo $data['smart']->min; ?>" name="input[]" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                    <input type="hidden" name="tb[]" value="min">
+                                    <div class="input-group-append">
+                                        <input type="hidden" name="table" value="smart">
+                                        <input type="hidden" name="key" value="<?php echo $data['smart']->tahun; ?>">
+                                        <input type="hidden" name="primary" value="tahun">
+                                        <button class="btn btn-outline-primary" type="submit" name="aksi" value="update" id="button-addon2">Set</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <p>Skor minimum ini akan menjadi acuan dalam menentukan siapa yang layak menerima bantuan</p>
                         </div>
-                        </form>
-                        <p>Skor minimum ini akan menjadi acuan dalam menentukan siapa yang layak menerima bantuan</p>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

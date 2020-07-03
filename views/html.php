@@ -2,9 +2,9 @@
 <html lang="en">
 <?php include 'head.php';?>
 
-<body style="background-image: url('mine/bg/7.jpg');background-size: 100%">
-    <div class="container-fluid " style="padding-right: 8vw;padding-left: 8vw">
-        <div class="row  align-items-center " style="height: 100vh ;">
+<body style="background-image: url('mine/bg/blue.png');background-size: 100%">
+    <div class="container-fluid " style="padding-right: 8vw;padding-left: 8vw;padding-top: 10vh;padding-bottom: 10vh">
+        <div class="row  align-items-center " >
             <?php if (isset($Session['admin'])): ?>
             <div class="col-12">
                 <div class="d-flex  border-primary border rounded" id="wrapper">
@@ -27,7 +27,7 @@
             <div class="col-7 mx-auto">
                 <div class="card mb-3 rounded">
                     <div class="row no-gutters">
-                        <div class="col-md-5" style="background: url('mine/bg/7.jpg') no-repeat center center fixed;">
+                        <div class="col-md-5" style="background: url('mine/bg/7.jpg') ">
                         </div>
                         <div class="col-md-7">
                             <div class="card-body">
@@ -80,6 +80,7 @@
             <?php endif;?>
         </div>
     </div>
+
     <!-- /#wrapper -->
     <!-- Bootstrap core JavaScript -->
     <?php include 'js.php';?>
