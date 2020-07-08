@@ -6,6 +6,11 @@
                 <span>Home</span> <span> <i class=" fa fa-angle-double-right"></i></span>
             </div>
         </a>
+         <a href="Galeri" class="<?php if ($data['link'] == 'Galeri'): ?> active <?php endif;?> list-group-item nav-icon list-group-item-action bg-primary text-light">
+            <div class="d-flex  justify-content-between align-items-cente">
+                <span>Galeri</span> <span> <i class=" fa fa-angle-double-right"></i></span>
+            </div>
+        </a>
         <?php if ($Session['admin']->jenis == 'Kelurahan'): ?>
         <a href="Keluarga" class="<?php if ($data['link'] == 'Keluarga'): ?> active <?php endif;?> list-group-item nav-icon list-group-item-action bg-primary text-light">
             <div class="d-flex  justify-content-between align-items-cente">
@@ -23,12 +28,22 @@
             <a href="Dinsos" class="list-group-item sub-nav py-2 list-group-item-action <?php if ($data['link'] == 'Dinsos'): ?> active <?php endif;?>">Dinsos</a>
             <a href="Kelurahan" class="list-group-item sub-nav py-2 list-group-item-action <?php if ($data['link'] == 'Kelurahan'): ?> active <?php endif;?>">Kelurahan</a>
         </div>
-        <a href="Pengaturan" class=" list-group-item nav-icon list-group-item-action bg-primary text-light">
+        <a href="Pengaturan" class="<?php if ($data['link'] == 'Pengaturan'): ?> active <?php endif;?> list-group-item nav-icon list-group-item-action bg-primary text-light">
             <div class="d-flex  justify-content-between align-items-cente">
                 <span>Pengaturan</span> <span> <i class=" fa fa-angle-double-right"></i></span>
             </div>
         </a>
+         <a href="Proses" class="<?php if ($data['link'] == 'Proses'): ?> active <?php endif;?> list-group-item nav-icon list-group-item-action bg-primary text-light">
+            <div class="d-flex  justify-content-between align-items-cente">
+                <span>Proses SMART</span> <span> <i class=" fa fa-angle-double-right"></i></span>
+            </div>
+        </a>
         <?php endif;?>
+        <a href="Laporan" class="<?php if ($data['link'] == 'Laporan'): ?> active <?php endif;?> list-group-item nav-icon list-group-item-action bg-primary text-light">
+            <div class="d-flex  justify-content-between align-items-cente">
+                <span>Laporan</span> <span> <i class=" fa fa-angle-double-right"></i></span>
+            </div>
+        </a>
         <a href="Logout" class=" list-group-item nav-icon list-group-item-action bg-primary text-light">
             <div class="d-flex  justify-content-between align-items-cente">
                 <span>Logout</span> <span> <i class=" fa fa-angle-double-right"></i></span>

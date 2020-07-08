@@ -96,13 +96,7 @@
                             <a href="?key=<?php echo $k->idpengguna; ?>" class="btn btn-warning btn-sm">Kelola</a>
                         </td>
                     </tr>
-                    <tr>
-                        <td colspan="5">
-                            <div class="row">
-                                <div class="col"></div>
-                            </div>
-                        </td>
-                    </tr>
+
                     <?php endforeach;?>
                 </tbody>
             </table>

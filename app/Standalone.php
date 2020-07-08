@@ -19,7 +19,8 @@ class Standalone
             'link' => 'Login',
 
         ];
-
+        $string = file_get_contents("quotes.json");
+        $data['quote'] = collect(json_decode($string)->quotes)->random();
         if (isset($Request->login)) {
             $data['admin'] = collect(Crud::table('pengguna')->select()->where('username', $Request->user)->where('password', $Request->pass)->get());
             if ($data['admin']->isEmpty()) {
@@ -160,13 +161,101 @@ class Standalone
                 {"name":"alamat","label":"Alamat","type":"textarea","max":"100","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true}
                 ]';
         $data['form'] = json_decode($fields1, true);
-        $data['keluarga'] = collect(Crud::table('keluarga')->select()->where('tahun', $Session['tahun'])->get());
-        $data['bantuan'] = collect(Crud::table('bantuan')->select()->get());
+        $data['keluarga'] = collect(Crud::table('keluarga')->select()->where('tahun', $Session['tahun'])->get())->map(function ($item, $key) use ($data) {
+            $item->tanggungan = json_decode($item->tanggungan);
+            $item->kriteria = json_decode($item->kriteria);
+            return $item;
+        });
+        $data['bantuan'] = collect(Crud::table('bantuan')->select()->get())->map(function ($item, $key) use ($data) {
+            $item->val = 0;
+            return $item;
+        });
         $data['subkriteria'] = collect(Crud::table('subkriteria')->select()->join('kriteria', 'kriteria.idkriteria', '=', 'subkriteria.idkriteria')->get());
         $data['kriteria'] = collect(Crud::table('kriteria')->select()->get())->map(function ($item, $key) use ($data) {
+            $item->val = null;
             $item->subkriteria = $data['subkriteria']->where('idkriteria', $item->idkriteria);
             return $item;
         });
+        if (isset($Request->key)) {
+            $data['keluarga.key'] = $data['keluarga']->where('idkeluarga', $Request->key)->first();
+            foreach ($data['form'] as $v => $k) {
+                $b = $k['name'];
+                $data['form'][$v]['val'] = $data['keluarga.key']->$b;
+            }
+            $kriteria = collect($data['keluarga.key']->kriteria);
+            $tanggungan = collect($data['keluarga.key']->tanggungan);
+            $data['bantuan'] = $data['bantuan']->map(function ($item, $key) use ($tanggungan) {
+                $item->val = $tanggungan->where('idbantuan', $item->idbantuan)->sum('jum');
+                return $item;
+            });
+            $data['kriteria'] = $data['kriteria']->map(function ($item, $key) use ($kriteria) {
+                $r = $kriteria->where('idkriteria', $item->idkriteria);
+                if ($r->isEmpty()) {
+                    $item->val = 0;
+
+                } else {
+                    $item->val = $r->first()->idsubkriteria;
+
+                }
+                return $item;
+            });
+        }
+
+        return $data;
+    }
+    public function Galeri($Request, $Session)
+    {
+        $data = [
+            'judul' => 'Galeri Kegiatan',
+            'path' => 'Galeri',
+            'link' => 'Galeri',
+            'icon' => 'fa-home',
+            'warna' => 'primary',
+        ];
+        //Fungsi::fields('keluarga', new Crud);
+        $data['a'] = scandir('foto');
+        array_shift($data['a']);
+        array_shift($data['a']);
+        return $data;
+    }
+    public function Laporan($Request, $Session)
+    {
+        $data = [
+            'judul' => 'Laporan',
+            'path' => 'Laporan',
+            'link' => 'Laporan',
+            'icon' => 'fa-print',
+            'warna' => 'primary',
+        ];
+        $data['smart'] = collect(Crud::table('smart')->select()->where('tahun', $Session['tahun'])->get());
+        if ($data['smart']->isEmpty()) {
+            Crud::table('smart')->insert(['tahun' => $Session['tahun'], 'min' => 0])->execute();
+            $data['smart'] = collect(Crud::table('smart')->select()->where('tahun', $Session['tahun'])->get());
+
+        }
+        $data['bantuan'] = collect(Crud::table('bantuan')->select()->where('tipe', 'primary')->get());
+
+        $data['smart'] = $data['smart']->first();
+        $data['proses'] = collect(json_decode($data['smart']->proses))->map(function ($item) use ($data) {
+            if ($item->total >= $data['smart']->min) {
+                $item->tanggungan = collect($item->tanggungan)->where('jum', '>', 0)->map(function ($item) {
+                    $item->total = $item->jum * $item->uang;
+                    return $item;
+                });
+                $item->uang = $item->tanggungan->sum('total') + $data['bantuan']->sum('uang');
+                $item->hasil = "Layak";
+            } else {
+                $item->hasil = "Tidak Layak";
+                $item->uang = 0;
+
+            }
+            return $item;
+
+        });
+        if ($Session['admin']->jenis == 'Kelurahan') {
+            $data['proses'] = $data['proses']->where('kelurahan', $Session['admin']->kelurahan);
+        }
+        $data['kriteria'] = collect(json_decode($data['smart']->kriteria));
 
         return $data;
     }

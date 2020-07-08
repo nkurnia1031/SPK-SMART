@@ -88,6 +88,24 @@ function update($Request, $Crud, $link, $pesan)
 
         }
     }
+    if ($table == 'keluarga') {
+
+        $Request->tanggungan = collect($Request->tanggungan)->where('jum', '>', 0)->map(function ($item, $key) {
+            $items = json_decode($item->detail);
+            $items->jum = $item->jum;
+            return $items;
+        });
+        $Request->kriteria = collect($Request->kriteria)->map(function ($item, $key) {
+            $item = json_decode($item);
+            return $item;
+        });
+        array_push($input, json_encode($Request->tanggungan));
+        array_push($tb, "tanggungan");
+        array_push($input, json_encode($Request->kriteria));
+        array_push($tb, "kriteria");
+
+    }
+
     $tes = collect($tb);
     $ar = $tes->combine($input)->toArray();
     if (is_array($Request->primary)) {

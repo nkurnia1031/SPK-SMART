@@ -151,6 +151,7 @@
                                         <th class="w-1">#</th>
                                         <th>Komponen</th>
                                         <th>Uang</th>
+                                        <th>Tipe</th>
                                         <th data-priority="1"></th>
                                     </tr>
                                 </thead>
@@ -166,6 +167,9 @@
                                         <td>
                                             Rp.
                                             <?php echo number_format($k->uang); ?>
+                                        </td>
+                                         <td>
+                                            <?php echo $k->tipe; ?>
                                         </td>
                                         <td class="text-right ">
                                             <a href="?idbantuan=<?php echo $k->idbantuan; ?>" class="btn btn-warning btn-sm">Kelola</a>
@@ -183,6 +187,13 @@
                                         <td>
                                             <input type="number" value="<?php echo $data['form.bantuan']['uang']; ?>" required="" min="1" class="form-control" name="input[]">
                                             <input type="hidden" name="tb[]" value="uang">
+                                        </td>
+                                          <td>
+                                            <select class="form-control" name="input[]">
+                                                <option <?php if ($data['form.bantuan']['tipe'] == 'Primary'): ?> selected <?php endif;?> value="Primary">Primary</option>
+                                                <option <?php if ($data['form.bantuan']['tipe'] == 'Secondary'): ?> selected <?php endif;?> value="Secondary">Secondary</option>
+                                            </select>
+                                            <input type="hidden" name="tb[]" value="tipe">
                                         </td>
                                         <td>
                                             <input type="hidden" name="table" value="bantuan">
@@ -209,7 +220,7 @@
                             <hr>
                             <form>
                                 <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" value="<?php echo $data['smart']->min; ?>" name="input[]" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                    <input type="number" step="any" class="form-control" value="<?php echo $data['smart']->min; ?>" name="input[]" aria-label="Recipient's username" aria-describedby="button-addon2">
                                     <input type="hidden" name="tb[]" value="min">
                                     <div class="input-group-append">
                                         <input type="hidden" name="table" value="smart">

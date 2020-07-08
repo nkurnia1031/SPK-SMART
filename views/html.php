@@ -25,13 +25,17 @@
             </div>
             <?php else: ?>
             <div class="col-7 mx-auto">
-                <div class="card mb-3 rounded">
+                <div class="card mb-3  rounded" style="margin-top: 20vh">
                     <div class="row no-gutters">
-                        <div class="col-md-5" style="background: url('mine/bg/7.jpg') ">
+                        <div class="col-md-5 px-5" style="background: url('mine/bg/7.jpg') ">
+
                         </div>
                         <div class="col-md-7">
                             <div class="card-body">
-                                <h5 class="card-title">Login ke sistem</h5>
+                                <h5 class="card-title">Selamat Datang Kembali
+
+                                </h5>
+
                                 <div class="auto-form-wrapper">
                                     <form action="Login" role="form" method="post" enctype="multipart/form-data">
                                         <div class="form-group">
@@ -70,6 +74,7 @@
                                         <div class="form-group">
                                             <button type="submit" name="login" value="1" class="btn btn-primary submit-btn btn-block">Login</button>
                                         </div>
+                                         <small class="h3 text-justify text-dark ">“<?php echo $data['quote']->quote; ?>” <small><strong><i><?php echo $data['quote']->by; ?></i></strong></small></small>
                                     </form>
                                 </div>
                             </div>
@@ -123,7 +128,7 @@
                     }
                 }
             },
-            "dom": '<"p-2 d-flex justify-content-between" f>t<"card-body d-flex justify-content-end" p>',
+            "dom": '<"p-2 d-flex justify-content-between" f>t<"card-body d-flex justify-content-between" ip>',
             "lengthMenu": [
                 [5, 10, -1],
                 [5, 10, "All"]

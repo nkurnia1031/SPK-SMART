@@ -86,8 +86,6 @@ class Admin
 
         }
         $data['smart'] = $data['smart']->first();
-        $string = file_get_contents("hasil.json");
-        $data['hasil'] = json_decode($string, true);
 
         $data['data.kriteria'] = collect(Crud::table('kriteria')->select()->get());
         $data['max'] = 100 - $data['data.kriteria']->sum('bobot');
@@ -108,7 +106,7 @@ class Admin
 
         }
         $data['data.bantuan'] = collect(Crud::table('bantuan')->select()->get());
-        $data['form.bantuan'] = ['komponen' => null, 'uang' => 0];
+        $data['form.bantuan'] = ['komponen' => null, 'uang' => 0, 'tipe' => null];
 
         if (isset($Request->idbantuan)) {
             $data['key'] = $data['data.bantuan']->where('idbantuan', $Request->idbantuan)->first();
@@ -129,29 +127,83 @@ class Admin
         return $data;
 
     }
-
-    public function LaporanBooking($Request, $Session)
+    public function Proses($Request, $Session)
     {
         $data = [
-            'judul' => 'Laporan Booking',
-            'path' => 'Admin/LaporanBooking',
-            'link' => 'Laporan-Booking',
+            'judul' => 'Proses SMART',
+            'path' => 'Admin/Proses',
+            'link' => 'Proses',
 
         ];
-        //Fungsi::fields('perawatan', new Crud);
-        $fields1 = '[
-                {"name":"id_perawatan","label":"ID Perawatan","type":"text","max":"15","pnj":12,"val":null,"red":"readonly","input":true,"up":true,"tb":true},
-                {"name":"nama_perawatan","label":"Nama Perawatan","type":"text","max":"30","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true},
-                {"name":"jenis_perawatan","label":"Jenis Perawatan","type":"text","max":"25","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true},
-                {"name":"harga","label":"Harga","type":"number","max":null,"pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true},
-                {"name":"gambar","label":"Gambar","type":"text","max":"65535","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true},
-                {"name":"desk","label":"Deskripsi","type":"textarea","max":"65535","pnj":12,"val":null,"red":"","input":true,"up":true,"tb":true}
-                ]';
-        $data['form'] = json_decode($fields1, true);
-        $data['form'][0]['val'] = "Pn-" . uniqid();
-        $data['data'] = collect(Crud::table('perawatan')->select()->get());
+        //Fungsi::fields('pengguna', new Crud);
+        $data['smart'] = collect(Crud::table('smart')->select()->where('tahun', $Session['tahun'])->get());
+        if ($data['smart']->isEmpty()) {
+            Crud::table('smart')->insert(['tahun' => $Session['tahun'], 'min' => 0])->execute();
+            $data['smart'] = collect(Crud::table('smart')->select()->where('tahun', $Session['tahun'])->get());
+
+        }
+        $data['smart'] = $data['smart']->first();
+        $data['proses'] = collect(json_decode($data['smart']->proses));
+        $data['kriteria'] = collect(json_decode($data['smart']->kriteria));
+
+        $data['status_kel'] = collect(Crud::table('status_kel')->select()->where('tahun', $Session['tahun'])->get());
+        $data['belum'] = $data['status_kel']->where('status', 'Belum');
+        if (isset($Request->p)) {
+            $smart = array();
+
+            $smart['data.bantuan'] = collect(Crud::table('bantuan')->select()->get());
+            $data['subkriteria'] = collect(Crud::table('subkriteria')->select()->get());
+
+            $smart['kriteria'] = collect(Crud::table('kriteria')->select()->get())->map(function ($item, $key) use ($data) {
+                $item->subkriteria = $data['subkriteria']->where('idkriteria', $item->idkriteria);
+                return $item;
+            });
+            $smart['keluarga'] = collect(Crud::table('keluarga')->select()->where('tahun', $Session['tahun'])->get())->map(function ($item, $key) use ($data, $smart) {
+                $item->tanggungan = json_decode($item->tanggungan);
+                $item->kriteria = collect(json_decode($item->kriteria));
+                foreach ($smart['kriteria'] as $v => $x) {
+                    $r = 'K' . ($v + 1);
+                    $t = $item->kriteria->where('idkriteria', $x->idkriteria);
+                    if ($t->isEmpty()) {
+                        $item->$r = "Tidak Terdata";
+
+                    } else {
+                        $item->$r = $t->first()->nilai;
+
+                    }
+
+                }
+                return $item;
+            });
+            $smart['keluarga'] = $smart['keluarga']->map(function ($item, $key) use ($data, $smart) {
+                $t = array();
+                foreach ($smart['kriteria'] as $v => $x) {
+                    $r = 'NK' . ($v + 1);
+                    $r3 = 'UK' . ($v + 1);
+                    $r2 = 'K' . ($v + 1);
+
+                    @$item->$r = ($item->$r2 - $smart['keluarga']->min($r2)) / ($smart['keluarga']->max($r2) - $smart['keluarga']->min($r2));
+                    if (is_nan($item->$r)) {
+                        $item->$r = 0;
+                    }
+                    $item->$r3 = $item->$r * $x->bobot;
+                    array_push($t, $item->$r3);
+                }
+                $item->total = array_sum($t);
+                return $item;
+            });
+            $kriteria = $smart['kriteria']->toJson();
+
+            $smart = json_encode($smart['keluarga']);
+            $t = Crud::table('smart')->update(['proses' => $smart, 'kriteria' => $kriteria])->where('tahun', $Session['tahun'])->execute();
+            echo "<script>alert('Selesai');</script>";
+            echo "<script>location.href = 'Proses';</script>";
+            die();
+
+        }
 
         return $data;
+
     }
 
 }
