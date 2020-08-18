@@ -27,10 +27,10 @@
             <div class="col-7 mx-auto">
                 <div class="card mb-3  rounded" style="margin-top: 20vh">
                     <div class="row no-gutters">
-                        <div class="col-md-5 px-5" style="background: url('mine/bg/7.jpg') ">
+                        <div class="col-md-6 px-5" style="background: url('mine/bg/dinsos.jpeg') ;background-size: 100%">
 
                         </div>
-                        <div class="col-md-7">
+                        <div class="col-md-6">
                             <div class="card-body">
                                 <h5 class="card-title">Selamat Datang Kembali
 
@@ -117,7 +117,7 @@
                                 '<div class="d-flex justify-content-between" >' +
 
                                 '<span class="dtr-title">' + col.title + ':' + '</span> ' +
-                                '<span class="dtr-data text-right text-break text-wrap">' + col.data + '</span>' +
+                                '<span class="dtr-data  text-break text-wrap">' + col.data + '</span>' +
                                 '</li></div>' :
                                 '';
                         }).join('');

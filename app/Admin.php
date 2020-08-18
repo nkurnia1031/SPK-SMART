@@ -113,16 +113,23 @@ class Admin
             $data['form.bantuan']['komponen'] = $data['key']->komponen;
             $data['form.bantuan']['uang'] = $data['key']->uang;
         }
-        if (isset($Request->min)) {
-            if (array_key_exists($Session['tahun'], $data['hasil'])) {
-                $data['hasil'][$Session['tahun']]['min'] = $Request->min;
-                $fp = fopen('results.json', 'w');
-                fwrite($fp, json_encode($data['hasil']));
-                fclose($fp);
+        $data['bantuan'] = collect(Crud::table('bantuan')->select()->get());
+        if (isset($Request->tanggungan)) {
+            foreach ($data['bantuan'] as $v => $k) {
+                if (property_exists($Request->tanggungan, $k->idbantuan)) {
+                    $r = $k->idbantuan;
+                    $data['bantuan'][$v]->jum = $Request->tanggungan->$r->jum;
+                    $data['bantuan'][$v]->total = $Request->tanggungan->$r->jum * $data['bantuan'][$v]->uang;
+                }
 
             }
+            if ($data['bantuan']->where('tipe', 'Secondary')->where('jum', '>', 0)->isEmpty()) {
+                echo "<script>alert('Maaf tidak boleh 0 semua');</script>";
+                echo "<script>location.href = 'Simulasi';</script>";
+                die();
+            }
+
         }
-        $data['hasil'] = json_decode(json_encode($data['hasil'][$Session['tahun']]));
 
         return $data;
 
@@ -151,8 +158,9 @@ class Admin
         if (isset($Request->p)) {
             $smart = array();
 
-            $smart['data.bantuan'] = collect(Crud::table('bantuan')->select()->get());
             $data['subkriteria'] = collect(Crud::table('subkriteria')->select()->get());
+            $data['bantuan'] = collect(Crud::table('bantuan')->select()->where('tipe', 'primary')->get());
+            $data['bantuan2'] = collect(Crud::table('bantuan')->select()->get());
 
             $smart['kriteria'] = collect(Crud::table('kriteria')->select()->get())->map(function ($item, $key) use ($data) {
                 $item->subkriteria = $data['subkriteria']->where('idkriteria', $item->idkriteria);
@@ -183,6 +191,7 @@ class Admin
                     $r2 = 'K' . ($v + 1);
 
                     @$item->$r = ($item->$r2 - $smart['keluarga']->min($r2)) / ($smart['keluarga']->max($r2) - $smart['keluarga']->min($r2));
+                    @$item->$r = $item->$r * 100;
                     if (is_nan($item->$r)) {
                         $item->$r = 0;
                     }
@@ -190,6 +199,38 @@ class Admin
                     array_push($t, $item->$r3);
                 }
                 $item->total = array_sum($t);
+                if ($item->total >= $data['smart']->min) {
+                    $item->tanggungan = collect($item->tanggungan)->where('jum', '>', 0)->map(function ($item) use ($data) {
+                        if ($data['bantuan2']->where('idbantuan', $item->idbantuan)->isNotEmpty()) {
+                            $jum = $item->jum;
+                            $item = $data['bantuan2']->where('idbantuan', $item->idbantuan)->first();
+                            $item->jum = $jum;
+                            $item->total = $item->jum * $item->uang;
+                            return $item;
+                        }
+
+                    });
+
+                    Crud::table('keluarga')->update(['tanggungan' => json_encode($item->tanggungan)])->where('idkeluarga', $item->idkeluarga)->execute();
+                    $batas = 0;
+                    $item->tanggungan2 = array();
+                    foreach ($item->tanggungan as $kta) {
+                        $batas = $batas + $kta->jum;
+                        if ($batas <= 4) {
+
+                            array_push($item->tanggungan2, $kta);
+
+                        }
+
+                    }
+                    $item->tanggungan2 = collect($item->tanggungan2);
+                    $item->tanggungan1 = $data['bantuan'];
+                    $item->hasil = "Layak";
+                } else {
+                    $item->hasil = "Tidak Layak";
+                    $item->uang = 0;
+
+                }
                 return $item;
             });
             $kriteria = $smart['kriteria']->toJson();

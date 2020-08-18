@@ -47,7 +47,7 @@ if (in_array($hal, $admin)) {
         $link = $_SERVER['HTTP_REFERER'];
 
         echo "<script>alert('Anda tidak memiliki hak untuk mengakses halaman ini');</script>";
-        echo "<script>location.href = '$link ';</script>";
+        echo "<script>location.href = 'Login';</script>";
     }
 }
 if (in_array($hal, $Kelurahan)) {
@@ -56,7 +56,7 @@ if (in_array($hal, $Kelurahan)) {
         $link = $_SERVER['HTTP_REFERER'];
 
         echo "<script>alert('Anda tidak memiliki hak untuk mengakses halaman ini');</script>";
-        echo "<script>location.href = '$link ';</script>";
+        echo "<script>location.href = 'Login';</script>";
     }
 }
 $route = [
@@ -64,6 +64,7 @@ $route = [
     'Logout' => ['class' => "app\Standalone", '@' => 'Logout'],
     'Home' => ['class' => "app\Standalone", '@' => 'Home'],
     'Galeri' => ['class' => "app\Standalone", '@' => 'Galeri'],
+    //'Simulasi' => ['class' => "app\Standalone", '@' => 'Simulasi'],
     'Dinsos' => ['class' => "app\Admin", '@' => 'Dinsos'],
     'Kelurahan' => ['class' => "app\Admin", '@' => 'Kelurahan'],
     'Pengaturan' => ['class' => "app\Admin", '@' => 'Pengaturan'],

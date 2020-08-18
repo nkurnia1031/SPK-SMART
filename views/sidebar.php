@@ -1,5 +1,5 @@
 <div class="bg-primary text-light border-right" id="sidebar-wrapper">
-    <div class="sidebar-heading">Nama App </div>
+    <div class="sidebar-heading">Sistem Bantuan PKH </div>
     <div class="list-group list-group-flush">
         <a href="Home" class="<?php if ($data['link'] == 'Home'): ?> active <?php endif;?> list-group-item nav-icon list-group-item-action bg-primary text-light">
             <div class="d-flex  justify-content-between align-items-cente">
@@ -11,6 +11,7 @@
                 <span>Galeri</span> <span> <i class=" fa fa-angle-double-right"></i></span>
             </div>
         </a>
+
         <?php if ($Session['admin']->jenis == 'Kelurahan'): ?>
         <a href="Keluarga" class="<?php if ($data['link'] == 'Keluarga'): ?> active <?php endif;?> list-group-item nav-icon list-group-item-action bg-primary text-light">
             <div class="d-flex  justify-content-between align-items-cente">

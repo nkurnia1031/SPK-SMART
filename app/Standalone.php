@@ -129,11 +129,11 @@ class Standalone
         ];
         $data['kelurahan'] = collect(Crud::table('pengguna')->select()->where('jenis', 'Kelurahan')->get())->unique('kelurahan');
         $data['smart'] = collect(Crud::table('smart')->select()->where('tahun', $Session['tahun'])->get());
-        $data['status_kel'] = collect(Crud::table('status_kel')->select()->where('tahun', $Session['tahun'])->get());
+        $data['status_kel'] = collect(Crud::table('status_kel')->select()->where('kelurahan', '!=', '-')->where('tahun', $Session['tahun'])->get());
         if ($Session['admin']->jenis == 'Kelurahan') {
             if ($data['status_kel']->where('kelurahan', $Session['admin']->kelurahan)->isEmpty()) {
                 Crud::table('status_kel')->insert(['tahun' => $Session['tahun'], 'kecamatan' => $Session['admin']->kecamatan, 'kelurahan' => $Session['admin']->kelurahan, 'status' => 'Belum'])->execute();
-                $data['status_kel'] = collect(Crud::table('status_kel')->select()->where('tahun', $Session['tahun'])->get());
+                $data['status_kel'] = collect(Crud::table('status_kel')->select()->where('kelurahan', '!=', '-')->where('tahun', $Session['tahun'])->get());
 
             }
         }
@@ -162,10 +162,13 @@ class Standalone
                 ]';
         $data['form'] = json_decode($fields1, true);
         $data['keluarga'] = collect(Crud::table('keluarga')->select()->where('tahun', $Session['tahun'])->get())->map(function ($item, $key) use ($data) {
-            $item->tanggungan = json_decode($item->tanggungan);
+            $item->tanggungan = collect(json_decode($item->tanggungan));
             $item->kriteria = json_decode($item->kriteria);
             return $item;
         });
+        if ($Session['admin']->jenis == 'Kelurahan') {
+            $data['keluarga'] = $data['keluarga']->where('kelurahan', $Session['admin']->kelurahan);
+        }
         $data['bantuan'] = collect(Crud::table('bantuan')->select()->get())->map(function ($item, $key) use ($data) {
             $item->val = 0;
             return $item;
@@ -236,26 +239,47 @@ class Standalone
         $data['bantuan'] = collect(Crud::table('bantuan')->select()->where('tipe', 'primary')->get());
 
         $data['smart'] = $data['smart']->first();
-        $data['proses'] = collect(json_decode($data['smart']->proses))->map(function ($item) use ($data) {
-            if ($item->total >= $data['smart']->min) {
-                $item->tanggungan = collect($item->tanggungan)->where('jum', '>', 0)->map(function ($item) {
-                    $item->total = $item->jum * $item->uang;
-                    return $item;
-                });
-                $item->uang = $item->tanggungan->sum('total') + $data['bantuan']->sum('uang');
-                $item->hasil = "Layak";
-            } else {
-                $item->hasil = "Tidak Layak";
-                $item->uang = 0;
-
-            }
-            return $item;
-
-        });
+        $data['proses'] = collect(json_decode($data['smart']->proses));
         if ($Session['admin']->jenis == 'Kelurahan') {
             $data['proses'] = $data['proses']->where('kelurahan', $Session['admin']->kelurahan);
         }
+        $data['proses'] = $data['proses']->map(function ($item) {
+            if ($item->hasil == 'Layak') {
+                $item->uang = collect($item->tanggungan2)->sum('total') + collect($item->tanggungan1)->sum('uang');
+            }
+            return $item;
+        });
         $data['kriteria'] = collect(json_decode($data['smart']->kriteria));
+
+        return $data;
+    }
+    public function Simulasi($Request, $Session)
+    {
+        $data = [
+            'judul' => 'Simulasi bantuan',
+            'path' => 'Simulasi',
+            'link' => 'Simulasi',
+            'icon' => 'fa-print',
+            'warna' => 'primary',
+        ];
+
+        $data['bantuan'] = collect(Crud::table('bantuan')->select()->get());
+        if (isset($Request->tanggungan)) {
+            foreach ($data['bantuan'] as $v => $k) {
+                if (property_exists($Request->tanggungan, $k->idbantuan)) {
+                    $r = $k->idbantuan;
+                    $data['bantuan'][$v]->jum = $Request->tanggungan->$r->jum;
+                    $data['bantuan'][$v]->total = $Request->tanggungan->$r->jum * $data['bantuan'][$v]->uang;
+                }
+
+            }
+            if ($data['bantuan']->where('tipe', 'Secondary')->where('jum', '>', 0)->isEmpty()) {
+                echo "<script>alert('Maaf tidak boleh 0 semua');</script>";
+                echo "<script>location.href = 'Simulasi';</script>";
+                die();
+            }
+
+        }
 
         return $data;
     }

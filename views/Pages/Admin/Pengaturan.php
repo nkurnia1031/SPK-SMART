@@ -168,7 +168,7 @@
                                             Rp.
                                             <?php echo number_format($k->uang); ?>
                                         </td>
-                                         <td>
+                                        <td>
                                             <?php echo $k->tipe; ?>
                                         </td>
                                         <td class="text-right ">
@@ -188,10 +188,12 @@
                                             <input type="number" value="<?php echo $data['form.bantuan']['uang']; ?>" required="" min="1" class="form-control" name="input[]">
                                             <input type="hidden" name="tb[]" value="uang">
                                         </td>
-                                          <td>
+                                        <td>
                                             <select class="form-control" name="input[]">
-                                                <option <?php if ($data['form.bantuan']['tipe'] == 'Primary'): ?> selected <?php endif;?> value="Primary">Primary</option>
-                                                <option <?php if ($data['form.bantuan']['tipe'] == 'Secondary'): ?> selected <?php endif;?> value="Secondary">Secondary</option>
+                                                <option <?php if ($data['form.bantuan']['tipe'] == 'Primary'): ?> selected
+                                                    <?php endif;?> value="Primary">Primary</option>
+                                                <option <?php if ($data['form.bantuan']['tipe'] == 'Secondary'): ?> selected
+                                                    <?php endif;?> value="Secondary">Secondary</option>
                                             </select>
                                             <input type="hidden" name="tb[]" value="tipe">
                                         </td>
@@ -231,6 +233,143 @@
                                 </div>
                             </form>
                             <p>Skor minimum ini akan menjadi acuan dalam menentukan siapa yang layak menerima bantuan</p>
+                        </div>
+                    </form>
+                </div>
+ <div class="col-12">
+                    <h5>Simulasi Bantuan</h5>
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row mb-2">
+                            <div class="col-4 mb-2">
+                                <div class="card rounded shadow" style="zoom:85%">
+                                    <h5 class="text-dark ml-2 text-center mt-1 pt-1">Tanggungan Keluarga Fulan</h5>
+                                    <div class=" card-body ">
+                                        <table class="table table-borderless">
+                                            <?php foreach ($data['bantuan']->where('tipe', 'Secondary') as $v => $k): ?>
+                                            <tr>
+                                                <td>
+                                                    <?php echo $k->komponen; ?>
+                                                </td>
+                                                <td>
+                                                    <input type="number" value="0" min="0" required="" class="form-control" name="tanggungan[<?php echo $k->idbantuan; ?>][jum]">
+                                                </td>
+                                            </tr>
+                                            <?php endforeach;?>
+                                        </table>
+                                        <hr>
+                                        <button class="btn btn-primary float-right">Proses</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <?php if (isset($Request->tanggungan)): ?>
+                            <div class="col-8">
+                                <h6><strong>Keluarga Fulan:</strong></h6>
+                                <table class="table table-borderless mb-3" style="width: 40%">
+                                    <?php foreach ($data['bantuan']->where('tipe', 'Secondary')->where('jum', '>', 0) as $k): ?>
+                                    <tr>
+                                        <td class="py-1">
+                                            <li></li>
+                                        </td>
+                                        <td class="py-1">
+                                            <?php echo $k->komponen; ?>
+                                        </td>
+                                        <td class="py-1">:</td>
+                                        <td class="py-1">
+                                            <?php echo $k->jum; ?>
+                                        </td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                </table>
+                                <h6><strong>Bantuan Sosial:</strong></h6>
+                                <table class="table table-borderless mb-3" style="width: 60%">
+                                    <?php $batas = 0;?>
+                                    <?php $x = 0;?>
+                                    <?php $x2 = array();?>
+                                    <?php while ($batas < 4): ?>
+                                    <?php $k = $data['bantuan']->where('tipe', 'Secondary')->where('jum', '>', 0)->sortbyDesc('uang')->values()[$x];?>
+                                    <tr>
+                                        <td class="py-1">
+                                            <li></li>
+                                        </td>
+                                        <td class="py-1">
+                                            <?php echo $k->komponen; ?>
+                                        </td>
+                                        <td class="py-1">:</td>
+                                        <td class="py-1">
+                                            <?php if ($k->jum > 1): ?>
+                                            <?php if ($batas + $k->jum > 4): ?>
+                                            <?php $k->jum = 4 - $batas;?>
+                                            <?php endif;?>
+                                            <?php endif;?>
+                                            <?php echo $k->jum; ?> x Rp.
+                                            <?php echo number_format($k->uang); ?> = Rp.
+                                            <?php echo number_format($k->uang * $k->jum); ?>
+                                            <?php $k->total = $k->uang * $k->jum;?>
+                                            <?php $batas += $k->jum;?>
+                                        </td>
+                                    </tr>
+                                    <?php array_push($x2, $k);?>
+                                    <?php $x++;?>
+                                    <?php if ($data['bantuan']->where('tipe', 'Secondary')->where('jum', '>', 0)->sum('jum') < 4): ?>
+                                    <?php if ($data['bantuan']->where('tipe', 'Secondary')->where('jum', '>', 0)->sum('jum') == $batas): ?>
+                                    <?php $batas = 5;?>
+                                    <?php endif;?>
+                                    <?php endif;?>
+                                    <?php endwhile;?>
+                                </table>
+                                <table class=" table table-borderless mb-3 " align="center" style="width: 60%">
+                                    <?php $x2 = collect($x2);?>
+                                    <tr>
+                                        <td class="py-1">
+                                            Setiap Tahun
+                                        </td>
+                                        <td class="py-1">=</td>
+                                        <td class="py-1">
+                                            Rp.
+                                            <?php echo number_format($x2->sum('total')); ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-1">
+                                            Setiap Tahap (4x)
+                                        </td>
+                                        <td class="py-1">=</td>
+                                        <td class="py-1">
+                                            Rp.
+                                            <?php echo number_format($x2->sum('total') / 4); ?>
+                                        </td>
+                                    </tr>
+                                    <?php foreach ($data['bantuan']->where('tipe', 'Primary') as $k): ?>
+                                    <tr>
+                                        <td class="py-1">
+                                            <?php echo $k->komponen; ?>
+                                        </td>
+                                        <td class="py-1">=</td>
+                                        <td class="py-1">
+                                            Rp.
+                                            <?php echo number_format($k->uang); ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-0" colspan="3">(diberikan hanya pada tahap 1)</td>
+                                    </tr>
+                                    <?php endforeach;?>
+                                    <tr>
+                                        <td class="py-1">
+                                            Setiap Tahap Pertama
+                                        </td>
+                                        <td class="py-1">=</td>
+                                        <td class="py-1">
+                                            <u> Rp.
+                                                <?php echo number_format(($x2->sum('total') / 4) + $data['bantuan']->where('tipe', 'Primary')->sum('uang')); ?></u>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <?php endif;?>
+                            <div class="col-12">
+                                <hr>
+                            </div>
                         </div>
                     </form>
                 </div>
